@@ -37,26 +37,32 @@ public class WatchActivity extends AppCompatActivity implements Camera.PreviewCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //setContentView(R.layout.activity_watch);
+        setContentView(R.layout.activity_watch);
         cameraView = findViewById(R.id.camSurface);
         //drawView = findViewById(R.id.drawSurface);
-        camHolder = cameraView.getHolder();
         /*camHolder.addCallback(this);
         drawHolder = drawView.getHolder();
         drawHolder.addCallback(this);
         drawHolder.setFormat(PixelFormat.TRANSLUCENT);
         deviceWidth=getScreenWidth();
         deviceHeight=getScreenHeight();*/
-        camera = Camera.open();
-        try {
+        camHolder = cameraView.getHolder();
+        camera.setPreviewCallback(this);
+        camera.startPreview();
+        try {camera = Camera.open();
+            Log.d(LL,"Cam open");}
+        catch (Exception e){Log.d(LL,"Camopen err");}
+
+       /* try {
             camera.setPreviewDisplay(camHolder);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        camera.setPreviewCallback(this);
-        camera.startPreview();
+            Log.d(LL,"Camopen preview set err");
+        }*/
 
     }
+
+    public void surfaceChanged(SurfaceHolder sh, int format, int w, int h) { Log.d(LL,"surfaceChanged");}
     @Override
     protected void onPause(){
         super.onPause();
