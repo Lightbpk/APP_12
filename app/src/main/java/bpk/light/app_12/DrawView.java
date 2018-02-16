@@ -13,8 +13,9 @@ import android.view.View;
 public class DrawView extends View {
     Bitmap bitmap;
     String LL = "LightLog";
-    public DrawView(Context context) {
+    public DrawView(Context context, Bitmap bitmap) {
         super(context);
+        this.bitmap = bitmap;
         Log.d(LL,"DW Crasted");
     }
     public void upDate(Bitmap bitmap){

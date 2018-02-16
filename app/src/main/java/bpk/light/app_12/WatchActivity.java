@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,12 +25,13 @@ import android.view.WindowManager;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class WatchActivity extends AppCompatActivity implements Camera.PreviewCallback{
+public class WatchActivity extends AppCompatActivity implements SurfaceHolder.Callback, Camera.PreviewCallback {
     SurfaceView cameraView,drawView;
     SurfaceHolder camHolder,drawHolder;
     Camera camera;
     Bitmap bmp;
     DrawView dw;
+    MyTask mt;
     String LL ="LightLog";
     int  deviceHeight,deviceWidth;
     private float RectLeft, RectTop,RectRight,RectBottom ;
@@ -38,46 +40,46 @@ public class WatchActivity extends AppCompatActivity implements Camera.PreviewCa
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_watch);
+        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.empty);
         cameraView = findViewById(R.id.camSurface);
-        //drawView = findViewById(R.id.drawSurface);
-        /*camHolder.addCallback(this);
-        drawHolder = drawView.getHolder();
-        drawHolder.addCallback(this);
-        drawHolder.setFormat(PixelFormat.TRANSLUCENT);
-        deviceWidth=getScreenWidth();
-        deviceHeight=getScreenHeight();*/
         camHolder = cameraView.getHolder();
-        camera.setPreviewCallback(this);
-        camera.startPreview();
+        camHolder.addCallback(this);
         try {camera = Camera.open();
             Log.d(LL,"Cam open");}
         catch (Exception e){Log.d(LL,"Camopen err");}
+        dw = new DrawView(this, bmp);
+        //setContentView(dw = new DrawView(this, bmp));
+    }
 
-       /* try {
-            camera.setPreviewDisplay(camHolder);
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(LL,"surfaceCreated");
+        //setContentView(dw = new DrawView(this));
+    }
+
+    public void surfaceChanged(SurfaceHolder sh, int format, int w, int h) {
+        Log.d(LL,"surfaceChanged");
+        //
+        try {
+            camera.setPreviewDisplay(sh);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d(LL,"Camopen preview set err");
-        }*/
+        }
+        camera.setPreviewCallback(this);
+        camera.startPreview();
 
     }
 
-    public void surfaceChanged(SurfaceHolder sh, int format, int w, int h) { Log.d(LL,"surfaceChanged");}
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        Log.d(LL,"surfaceKilled");
+    }
+
     @Override
     protected void onPause(){
         super.onPause();
         camera.release();
     }
-    /*public static int getScreenWidth() {
-
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-
-    }
-        public static int getScreenHeight() {
-
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-
-    }*/
 
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
@@ -90,8 +92,18 @@ public class WatchActivity extends AppCompatActivity implements Camera.PreviewCa
         YuvImage yuvimage=new YuvImage(bytes, ImageFormat.NV21,width,height,null);
         yuvimage.compressToJpeg(rect, 100, outstr);
         bmp = BitmapFactory.decodeByteArray(outstr.toByteArray(), 0, outstr.size());
-        setContentView(dw = new DrawView(this));
-        dw.upDate(bmp);
+        //setContentView(dw);
+        mt = new MyTask();
+        mt.execute();
+    }
+
+
+    class MyTask extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+                //setContentView(dw);
+                dw.upDate(bmp);
+            return null;
+        }
     }
    /* private void Draw()
     {
