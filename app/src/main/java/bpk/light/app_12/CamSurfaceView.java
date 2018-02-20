@@ -27,7 +27,11 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     public CamSurfaceView(Context context) {
         super(context);
         surfaceHolder = getHolder();
-        mCamera = Camera.open();
+        try{mCamera = Camera.open();}
+        catch(Exception e){
+            e.printStackTrace();
+
+        }
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3);
         paint.setColor(Color.WHITE);
@@ -96,7 +100,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
    }
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        setCameraDisplayOrientation();
+        //setCameraDisplayOrientation();
         try {
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
@@ -110,7 +114,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         mCamera.stopPreview();
-        setCameraDisplayOrientation();
+        //setCameraDisplayOrientation();
         try {
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
