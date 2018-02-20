@@ -19,7 +19,7 @@ import java.io.IOException;
  * Created by Admin on 12.02.2018.
  */
 
-public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
     SurfaceHolder surfaceHolder;
     Path path;
     Camera mCamera;
@@ -35,7 +35,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-    @Override
+/*    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             path = new Path();
@@ -53,7 +53,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         }
 
         return true;
-    }
+    }*/
    public void setCameraDisplayOrientation() {
        if (mCamera == null)
            return;
@@ -100,6 +100,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
+            mCamera.setPreviewCallback(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -113,6 +114,7 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
+            mCamera.setPreviewCallback(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,5 +123,10 @@ public class CamSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 
+    }
+
+    @Override
+    public void onPreviewFrame(byte[] bytes, Camera camera) {
+        Log.d("LightLog","Frame geted");
     }
 }
