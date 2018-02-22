@@ -162,14 +162,17 @@ public class WatchActivity extends AppCompatActivity implements SurfaceHolder.Ca
                         mScale.setScale((float) 0.2, (float) 0.2);
                         bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), mScale, true);
                         half = getCroppedBitmap(bitmap, true);
-                        canvas.drawBitmap(half, 0, 0, null);
                         Matrix matrix = new Matrix();
                         matrix.preScale(1.0f, -1.0f);
                         matrix.setRotate(-180);
                         coled = Bitmap.createBitmap(half, 0, 0, half.getWidth(), half.getHeight(), matrix, true);
-                        canvas.drawBitmap(coled, 0, 0, null);
-                        Log.d("LightLog", "Drawing Green");
-
+                        for(int j=0; j<dh;j=j+160) {
+                            for (int i = 0; i < dw; i = i + 100) {
+                                canvas.drawBitmap(half, i, j, null);
+                                canvas.drawBitmap(coled, i, j, null);
+                                Log.d("LightLog", "Drawing Green");
+                            }
+                        }
                 } finally {
                     if (canvas != null) {
                         surfaceHolder.unlockCanvasAndPost(canvas);
