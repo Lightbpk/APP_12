@@ -149,7 +149,7 @@ public class WatchActivity extends AppCompatActivity implements SurfaceHolder.Ca
                         continue;
                     }
                     else Log.d("LightLog","Canvas not Null");
-                    canvas.drawBitmap(getCroppedBitmap(bmp),0,0,null);
+                    canvas.drawBitmap(getCroppedBitmap(bmp,true),0,0,null);
                     Log.d("LightLog","Drawing Green");
                 } finally {
                     if (canvas != null) {
@@ -159,7 +159,7 @@ public class WatchActivity extends AppCompatActivity implements SurfaceHolder.Ca
             }
         }
     }
-    private Bitmap getCroppedBitmap(Bitmap bitmap) {
+    private Bitmap getCroppedBitmap(Bitmap bitmap,boolean tf) {
         Bitmap targetBitmap = Bitmap.createBitmap(bitmap.getWidth(),bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(targetBitmap);
         Path path;
@@ -169,9 +169,16 @@ public class WatchActivity extends AppCompatActivity implements SurfaceHolder.Ca
         paint.setColor(color);
         path = new Path();
         path.reset();
+        if(tf){
         path.moveTo(0,0);
         path.lineTo(bitmap.getWidth(),bitmap.getHeight());
         path.lineTo(bitmap.getWidth(),0);
+        }
+        else{
+            path.moveTo(0,0);
+            path.lineTo(0,bitmap.getHeight());
+            path.lineTo(bitmap.getWidth(),bitmap.getHeight());
+        }
         path.close();
         canvas.drawPath(path,paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
